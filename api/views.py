@@ -63,6 +63,14 @@ class ProductViewSet(viewsets.ModelViewSet):
             return ProductListSerializer
         return ProductDetailSerializer
     
+    def get_serializer_context(self):
+        """
+        Add request to serializer context to build absolute URLs for images
+        """
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
+    
     @action(detail=True, methods=['get'], url_path='transactions')
     def transactions(self, request, pk=None):
         """Get all inventory transactions for a specific product"""

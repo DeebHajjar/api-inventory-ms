@@ -26,7 +26,8 @@ class Product(models.Model):
     current_quantity = models.PositiveIntegerField(default=0)
     min_quantity = models.PositiveIntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True, related_name='products')
-    image_url = models.URLField(blank=True, null=True)
+    # Change from URLField to ImageField
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

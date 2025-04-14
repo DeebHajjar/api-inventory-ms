@@ -27,10 +27,11 @@ class ProductListSerializer(serializers.ModelSerializer):
     """Serializer for Products (for product lists)"""
     category_name = serializers.ReadOnlyField(source='category.name')
     stock_status = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Product
-        fields = ['id', 'name', 'sku', 'price', 'current_quantity', 'category_name', 'stock_status']
+        fields = ['id', 'name', 'sku', 'price', 'current_quantity', 'category_name', 'stock_status', 'image_url']
     
     def get_stock_status(self, obj):
         """Determine stock status"""
@@ -40,6 +41,15 @@ class ProductListSerializer(serializers.ModelSerializer):
             return "low_stock"
         else:
             return "in_stock"
+    
+    def get_image_url(self, obj):
+        """Get complete image URL"""
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -54,13 +64,14 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     )
     stock_status = serializers.SerializerMethodField()
     profit_margin = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Product
         fields = [
             'id', 'name', 'description', 'sku', 'price', 'cost_price', 
             'current_quantity', 'min_quantity', 'category', 'category_id',
-            'image_url', 'created_at', 'updated_at', 'stock_status',
+            'image','image_url', 'created_at', 'updated_at', 'stock_status',
             'profit_margin'
         ]
     
@@ -78,6 +89,15 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         if obj.cost_price > 0:
             margin = ((obj.price - obj.cost_price) / obj.price) * 100
             return round(margin, 2)
+        return None
+    
+    def get_image_url(self, obj):
+        """Get complete image URL"""
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
         return None
 
 

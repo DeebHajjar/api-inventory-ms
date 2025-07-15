@@ -4,28 +4,27 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from . import views
 
-# إنشاء راوتر للـ API
+# Create a router for the API
 router = DefaultRouter()
 router.register(r'products', views.ProductViewSet)
 router.register(r'categories', views.CategoryViewSet)
 router.register(r'transactions', views.InventoryTransactionViewSet)
 
-# تعريف أنماط URL
+# Define URL patterns
 urlpatterns = [
-    # تضمين مسارات API الأساسية من الراوتر
+    # Include basic API routes from the router
     path('api/', include(router.urls)),
     
-    # مسارات إضافية خاصة
-    # للمنتجات التي على وشك ان تنفذ
+    # Special additional URLS
+    # For products that are about to run out
     path('api/products/low-stock/', views.ProductViewSet.as_view({'get': 'low_stock'}), name='low-stock-products'),
-    # المنتجات التي نفذت كميتها
+    # Out of stock products
     path('api/products/out-of-stock/', views.ProductViewSet.as_view({'get': 'out_of_stock'}), name='out-of-stock-products'),
-    # آخر معاملات Transaction
+    # Latest Transaction
     path('api/transactions/latest/', views.InventoryTransactionViewSet.as_view({'get': 'latest'}), name='latest-transactions'),
-    # ملخص معاملات Transaction
+    # Transaction summary
     path('api/transactions/summary/', views.InventoryTransactionViewSet.as_view({'get': 'summary'}), name='transactions-summary'),
-    # استخدم أيضا products/<id>/transactions للحصول على جميع المعاملات لمنتج معين
-    
+    # Also use products/<id>/transactions to get all transactions for a specific product.    
 ]
 
 if settings.DEBUG:

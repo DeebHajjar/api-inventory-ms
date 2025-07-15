@@ -19,7 +19,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    """API endpoint للفئات"""
+    """API endpoint for categories"""
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -28,7 +28,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['get'])
     def products(self, request, pk=None):
-        """الحصول على جميع المنتجات في فئة معينة"""
+        """Get all products in a specific category"""
         category = self.get_object()
         products = category.products.all()
         serializer = ProductListSerializer(products, many=True)
@@ -36,7 +36,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    """API endpoint للمنتجات"""
+    """API endpoint for products"""
     queryset = Product.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category', 'current_quantity']
